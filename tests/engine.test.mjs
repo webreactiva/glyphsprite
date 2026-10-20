@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { C, PAL, REFERENCE, loadTheme, mix, parseDesignMd, sprite, useTheme } from "../skills/glyphsprite/scripts/engine.mjs";
+import { C, PAL, REFERENCE, fontFaces, loadTheme, mix, parseDesignMd, sprite, text, useTheme } from "../skills/glyphsprite/scripts/engine.mjs";
 import * as SPRITES from "../skills/glyphsprite/scripts/sprites.mjs";
 
 test("runs of the same character become one rect", async () => {
@@ -48,4 +48,12 @@ test("every catalog sprite only uses legend characters", async () => {
   const known = new Set([...Object.keys(PAL), "o", "v", "."]);
   for (const [name, rows] of Object.entries(SPRITES))
     for (const ch of rows.join("")) assert.ok(known.has(ch), `${name} uses unknown "${ch}"`);
+});
+
+test("extra theme fonts are embedded and usable by name", async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "glyphsprite-"));
+  fs.writeFileSync(path.join(dir, "pix.woff2"), "not a real font");
+  await useTheme({ ...REFERENCE, font: { family: "Base" }, fonts: [{ family: "Pix", files: { 400: "pix.woff2" } }], base: dir });
+  assert.match(fontFaces(), /font-family:'Pix';font-weight:400/);
+  assert.match(text(0, 0, ["hi"], { family: "Pix" }), /font-family="'Pix','Base'/);
 });

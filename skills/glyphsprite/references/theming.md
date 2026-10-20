@@ -66,6 +66,7 @@ and `oklch()` are skipped.
 | `font.google` | no | `true` downloads `family` from Google Fonts (latin subset, cached in `~/.cache/glyphsprite/fonts`) and embeds it. The easiest way to get a real font: no files to ship. |
 | `font.weights` | no | With `google`: weights to fetch. Default `[400, 700]`. |
 | `font.files` | no | Weight → file, relative to the theme file. Embedded in every SVG (an SVG in `<img>` cannot load fonts). Without files the viewer's installed font is used, so text measured in the preview may wrap differently elsewhere. |
+| `fonts` | no | Extra families for display text, e.g. `[{ "family": "Silkscreen", "google": true, "weights": [400, 700] }]`. Same keys as `font`; `weights` defaults to `[400]`. Use one with `text(..., { family: "Silkscreen" })` and measure it with `M.width(s, { family: "Silkscreen" })`. Each family adds weight to every SVG: keep them for titles. |
 | `font.unicodes` | no | Subset range for pyftsubset. Default covers Latin-1 plus dashes, quotes, arrows and `≠`. |
 | `sign.label` | no | Bottom-right text. |
 | `sign.mark` | no | Logo SVG, top-right, small and translucent. `tint: true` repaints it in the outline color. |

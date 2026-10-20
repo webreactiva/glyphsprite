@@ -145,6 +145,7 @@ export async function useTheme(input, cwd) {
   for (const k of ["ink", "paper"]) if (!hex(t[k])) throw new Error(`theme.${k} must be a hex color, got ${t[k]}`);
   if (!Array.isArray(t.accents) || !t.accents.length || !t.accents.every(hex)) throw new Error("theme.accents must be a non-empty array of hex colors");
   if (t.font?.google && !t.font.files) t.font = { ...t.font, files: await googleFont(t.font.family, t.font.weights || [400, 700]) };
+  t.fonts = await Promise.all((t.fonts || []).map(async (f) => (f.google && !f.files ? { ...f, files: await googleFont(f.family, f.weights || [400]) } : f)));
   theme = t;
   fontCss = undefined;
   fillPalette(t);
@@ -153,6 +154,9 @@ export async function useTheme(input, cwd) {
 
 const family = () => theme?.font?.family || "system-ui";
 const stack = () => `'${family()}',system-ui,-apple-system,'Segoe UI',sans-serif`;
+// "brand" is the theme font; any other name must be one of theme.fonts.
+const fontStack = (fam = "brand") =>
+  fam === "brand" ? stack() : fam === "mono" ? "ui-monospace,Menlo,monospace" : fam === "hand" ? "'Bradley Hand','Marker Felt',cursive" : `'${fam}',${stack()}`;
 
 const groups = (rows, pal) => {
   const by = {};
@@ -210,29 +214,30 @@ let fontCss;
 // An SVG inside <img> cannot load external fonts, so the files go in as base64.
 // No font files → empty: the SVG falls back to the viewer's system font.
 export const fontFaces = () =>
-  (fontCss ??= Object.entries(theme?.font?.files || {})
-    .map(([weight, file]) => {
-      const [b64, fmt] = fontB64(path.resolve(theme.base, file));
-      return `@font-face{font-family:'${family()}';font-weight:${weight};src:url(data:font/${fmt};base64,${b64}) format("${fmt}")}`;
-    })
+  (fontCss ??= [{ family: family(), files: theme?.font?.files }, ...(theme?.fonts || [])]
+    .flatMap((f) =>
+      Object.entries(f.files || {}).map(([weight, file]) => {
+        const [b64, fmt] = fontB64(path.resolve(theme.base, file));
+        return `@font-face{font-family:'${f.family}';font-weight:${weight};src:url(data:font/${fmt};base64,${b64}) format("${fmt}")}`;
+      })
+    )
     .join(""));
 
 // Playwright page with the font loaded, to measure text for real.
 export async function createMeasurer(browser) {
   const page = await browser.newPage();
   await page.setContent(`<style>${fontFaces()}</style><span style="font-family:${stack()};font-weight:700">.</span><span style="font-family:${stack()}">.</span>`);
-  await page.evaluate(async (f) => {
-    await document.fonts.load(`400 20px '${f}'`);
-    await document.fonts.load(`700 20px '${f}'`);
-  }, family());
-  const width = (str, { size = 20, weight = 400, ls = 0 } = {}) =>
+  await page.evaluate(async (fams) => {
+    for (const f of fams) for (const w of [400, 700]) await document.fonts.load(`${w} 20px '${f}'`);
+  }, [family(), ...(theme?.fonts || []).map((f) => f.family)]);
+  const width = (str, { size = 20, weight = 400, ls = 0, family: fam } = {}) =>
     page.evaluate(
       ([s, f, l]) => {
         const c = (window.__c ||= document.createElement("canvas").getContext("2d"));
         c.font = f;
         return c.measureText(s).width + l * Math.max(0, [...s].length - 1);
       },
-      [str, `${weight} ${size}px ${stack()}`, ls * size]
+      [str, `${weight} ${size}px ${fontStack(fam)}`, ls * size]
     );
   const wrap = async (str, max, font) => {
     const lines = [];
@@ -254,7 +259,7 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 // Multiline text. `lines` is an array; a line is a string or an array of {t, fill?, weight?}
 // chunks to mix styles. `ls` is in em, like CSS.
 export const text = (x, y, lines, { size = 20, weight = 400, fill = C.text, lh = 1.3, ls = 0, anchor = "start", family: fam = "brand", upper = false, cls = "" } = {}) => {
-  const ff = fam === "mono" ? "ui-monospace,Menlo,monospace" : fam === "hand" ? "'Bradley Hand','Marker Felt',cursive" : stack();
+  const ff = fontStack(fam);
   const tspans = lines
     .map((ln, i) => {
       const parts = Array.isArray(ln) ? ln : [{ t: ln }];
