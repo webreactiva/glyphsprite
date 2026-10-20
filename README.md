@@ -29,15 +29,12 @@ motion.
 
 ## Install
 
-The packaged skill lives in `skills/glyphsprite/`. Symlink that directory where your
-agent looks for skills:
-
 ```bash
-git clone https://github.com/webreactiva/glyphsprite.git
-ln -s "$(pwd)/glyphsprite/skills/glyphsprite" ~/.claude/skills/
+npx skills add webreactiva/glyphsprite
 ```
 
-Or `./package-skill.sh` to get a `glyphsprite.zip` you can hand to anyone.
+It works with any agent that reads skills. Or run `./package-skill.sh` to get a
+`glyphsprite.zip` you can hand to anyone.
 
 Requirements: **Node 18+** and **playwright** with Chromium in the project where you
 build pieces (`npm i -D playwright && npx playwright install chromium`). It measures
@@ -46,10 +43,12 @@ text and takes preview frames; the SVGs themselves depend on nothing. Optional:
 
 ## Use it
 
+Ask your agent in plain words, or call the skill by name if your agent supports that:
+
 ```
-/glyphsprite an infographic of the red-green-refactor cycle for my post
-/glyphsprite a blog cover for "Your agent forgets everything between sessions"
-/glyphsprite animate how a request goes through a load balancer --keep=sources
+glyphsprite: an infographic of the red-green-refactor cycle for my post
+glyphsprite: a blog cover for "Your agent forgets everything between sessions"
+glyphsprite: animate how a request goes through a load balancer --keep=sources
 ```
 
 Everything that rebuilds a picture (theme, script, sprites of its own, preview
@@ -109,7 +108,6 @@ skills/glyphsprite/            the packaged skill — the only thing distributed
   scripts/engine.mjs           ASCII → SVG, text measuring, fonts, preview
   scripts/sprites.mjs          the reference catalog
   scripts/catalog.mjs          contact sheet of the catalog under any theme
-.claude/skills/glyphsprite -> symlink to skills/glyphsprite (local use)
 package-skill.sh               builds glyphsprite.zip for distribution
 assets/                        images used by this README
 examples/                      example pieces and their built SVGs
