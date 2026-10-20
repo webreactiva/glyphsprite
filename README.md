@@ -33,7 +33,8 @@ motion.
 npx skills add webreactiva/glyphsprite
 ```
 
-It works with any agent that reads skills. Or run `./package-skill.sh` to get a
+It works with any agent that reads skills. Each
+[release](https://github.com/webreactiva/glyphsprite/releases) also ships a
 `glyphsprite.zip` you can hand to anyone.
 
 Requirements: **Node 18+** and **playwright** with Chromium in the project where you
@@ -124,6 +125,9 @@ npm run catalog      # rebuild examples/catalog.svg
 npm run examples     # rebuild the examples and write review frames to */out/
 npm run package      # glyphsprite.zip
 ```
+
+Releases: push a tag (`git tag v0.2.0 && git push origin v0.2.0`) and the
+`release` workflow attaches a fresh `glyphsprite.zip` to a GitHub release.
 
 ## Limits
 
