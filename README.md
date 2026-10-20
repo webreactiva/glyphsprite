@@ -98,6 +98,14 @@ Built with the code in `examples/`. Run them with `npm run examples`.
 
 <img src="examples/catalog.svg" alt="Grid of the 24 reference sprites" width="100%">
 
+## Under the hood
+
+What the skill runs for each picture: load the theme, turn ASCII rows into
+rectangles, measure text with the real font, pack one SVG, then freeze frames and
+look at them until the picture is right.
+
+<p align="center"><img src="assets/under-the-hood.svg" alt="Six steps in a column: useTheme, spriteG, createMeasurer, svgDoc, preview and the final img, with a dashed loop from preview back to measuring" width="480"></p>
+
 ## Project layout
 
 ```
