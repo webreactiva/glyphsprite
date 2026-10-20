@@ -1,0 +1,15 @@
+{
+  "name": "glyphsprite-dev",
+  "private": true,
+  "type": "module",
+  "description": "Development workspace for the glyphsprite skill. Only skills/glyphsprite/ is distributed.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "catalog": "node skills/glyphsprite/scripts/catalog.mjs --reference examples/catalog.svg",
+    "examples": "node examples/build.mjs --preview && node examples/cover.mjs --preview && node examples/acme/build.mjs --preview",
+    "package": "./package-skill.sh"
+  },
+  "devDependencies": {
+    "playwright": "1.58.2"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "skill_name": "glyphsprite",
+  "note": "Test prompts for the skill-creator eval loop. No assertions yet.",
+  "evals": [
+    { "id": 1, "files": [],
+      "prompt": "make me an infographic of the red-green-refactor cycle for my blog",
+      "expected_output": "No theme, no DESIGN.md in cwd: asks once for colors, font and signature, offering the reference palette. Draws nothing before the answer." },
+    { "id": 2, "files": ["examples/acme/DESIGN.md"],
+      "prompt": "draw a comparison between a cache and a database using our design system",
+      "expected_output": "Reads DESIGN.md, reports the mapping (primary→ink, canvas→paper, accents in order) before drawing. SVG uses only theme colors, previews read." },
+    { "id": 3, "files": [],
+      "prompt": "blog cover 1200x630 for a post titled 'Your agent forgets everything between sessions'. Use ink #111827, paper #f9fafb, accents #2563eb #f59e0b, font Inter",
+      "expected_output": "Creates a glyphsprite/ workspace with theme.json holding the given values and font.google, uses CANVAS.cover, one large sprite, title wrapped with M.wrap, PNG frame exported." },
+    { "id": 4, "files": [],
+      "prompt": "animate how a request goes through a load balancer to three servers, dark background, reference palette is fine",
+      "expected_output": "Reference theme, new sprites built from catalog ones, animation with a 4 s period and steps(), frames at several instants reviewed." }
+  ]
+}

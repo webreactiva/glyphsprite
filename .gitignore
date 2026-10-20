@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+*.log
+
+# Review frames written by --preview
+out/
+
+# Built by package-skill.sh
+glyphsprite.zip
+
+# Local symlink for using the skill from this repo
+.claude/
