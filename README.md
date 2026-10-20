@@ -5,6 +5,8 @@ glyphsprite turns it into a crisp SVG with your colors and your font: infographi
 explainer diagrams, blog covers, social cards. Static, or animated with CSS that
 lives inside the file.
 
+<img src="assets/what-is-glyphsprite.svg" alt="Three steps: a theme gives your colors and font, you draw a sprite as ASCII rows, and you get one crisp animated SVG" width="100%">
+
 ```js
 export const KEY = [
   ".oooo..........",
@@ -109,6 +111,7 @@ skills/glyphsprite/            the packaged skill — the only thing distributed
   scripts/catalog.mjs          contact sheet of the catalog under any theme
 .claude/skills/glyphsprite -> symlink to skills/glyphsprite (local use)
 package-skill.sh               builds glyphsprite.zip for distribution
+assets/                        images used by this README
 examples/                      example pieces and their built SVGs
 tests/                         node:test checks for the engine (npm test)
 evals/                         prompts for the skill-creator eval loop
